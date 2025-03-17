@@ -1,6 +1,5 @@
+import axios from 'axios';
 import actionTypes from '../constants/actionTypes';
-//import runtimeEnv from '@mars/heroku-js-runtime-env'
-const env = process.env;
 
 function userLoggedIn(username) {
     return {
@@ -17,53 +16,35 @@ function logout() {
 
 export function submitLogin(data) {
     return dispatch => {
-        return fetch(`${env.REACT_APP_API_URL}/signin`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data),
-            mode: 'cors'
-        }).then((response) => {
-            if (!response.ok) {
-                throw Error(response.statusText);
-            }
-            return response.json()
-        }).then((res) => {
-            localStorage.setItem('username', data.username);
-            localStorage.setItem('token', res.token);
-
-            dispatch(userLoggedIn(data.username));
-        }).catch((e) => console.log(e));
+        return axios.post(`${process.env.REACT_APP_API_URL}/signin`, data)
+            .then((response) => {
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('username', data.username);
+                dispatch(userLoggedIn(data.username));
+                return response;
+            })
+            .catch((error) => {
+                throw(error);
+            });
     }
 }
 
 export function submitRegister(data) {
     return dispatch => {
-        return fetch(`${env.REACT_APP_API_URL}/signup`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data),
-            mode: 'cors'
-        }).then((response) => {
-            if (!response.ok) {
-                throw Error(response.statusText);
-            }
-            return response.json()
-        }).then((res) => {
-            dispatch(submitLogin(data));
-        }).catch((e) => console.log(e));
+        return axios.post(`${process.env.REACT_APP_API_URL}/signup`, data)
+            .then((response) => {
+                return response;
+            })
+            .catch((error) => {
+                throw(error);
+            });
     }
 }
 
 export function logoutUser() {
     return dispatch => {
-        localStorage.removeItem('username');
         localStorage.removeItem('token');
-        dispatch(logout())
+        localStorage.removeItem('username');
+        dispatch(logout());
     }
 }

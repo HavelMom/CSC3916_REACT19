@@ -10,6 +10,7 @@ function Login() {
   });
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const updateDetails = (event) => {
     setDetails({
@@ -18,9 +19,14 @@ function Login() {
     });
   };
 
-  const login = (event) => {
+  const login = async (event) => {
     event.preventDefault(); // Prevent form from refreshing the page
-    dispatch(submitLogin(details));
+    try {
+      await dispatch(submitLogin(details));
+      navigate('/movielist');            // ← redirect on success
+      } catch (err) {
+      console.error(err);
+      }
   };
 
   return (

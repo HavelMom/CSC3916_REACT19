@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { submitRegister } from '../actions/authActions';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 
 function Register() {
@@ -11,6 +12,7 @@ function Register() {
     });
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const updateDetails = (event) => {
         setDetails({
@@ -19,8 +21,13 @@ function Register() {
         });
     };
 
-    const register = () => {
-        dispatch(submitRegister(details));
+    const register = async () => {
+        try {
+            await dispatch(submitRegister(details));
+            navigate('/signin');               // ← after signup, go to login
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     return (

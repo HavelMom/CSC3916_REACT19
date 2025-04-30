@@ -38,7 +38,7 @@ function MovieList() {
               {/* Use Nav.Link with "as={Link}" to avoid nested anchors */}
               <Nav.Link
                 as={Link}
-                to={`/movie/${movie._id}`}
+                to={`/movies/${movie._id}`}
                 onClick={() => handleClick(movie)}
               >
                 <Image className="image" src={movie.imageUrl} thumbnail />

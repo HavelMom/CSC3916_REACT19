@@ -1,8 +1,10 @@
-// src/actions/reviewActions.js
 import actionTypes from '../constants/actionTypes';
 
 export function reviewAdded(review) {
-  return { type: actionTypes.ADD_REVIEW, review };
+  return {
+    type: actionTypes.ADD_REVIEW,
+    review
+  };
 }
 
 export function submitReview({ movieId, rating, comment }) {

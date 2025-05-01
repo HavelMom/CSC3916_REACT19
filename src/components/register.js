@@ -1,56 +1,76 @@
+// src/components/register.js
 import React, { useState } from 'react';
-import { submitRegister } from '../actions/authActions';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { Form, Button } from 'react-bootstrap';
+import { submitRegister }    from '../actions/authActions';
+import { useDispatch }       from 'react-redux';
+import { useNavigate }       from 'react-router-dom';
+import { Form, Button }      from 'react-bootstrap';
 
 function Register() {
-    const [details, setDetails] = useState({
-        name: '',
-        username: '',
-        password: ''
-    });
+  const [details, setDetails] = useState({
+    name: '',
+    username: '',
+    password: ''
+  });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const updateDetails = e => {
+    setDetails({ ...details, [e.target.id]: e.target.value });
+  };
 
-    const updateDetails = (event) => {
-        setDetails({
-          ...details,
-            [event.target.id]: event.target.value
-        });
-    };
+  
+  const register = async e => {
+    e.preventDefault();
+    try {
+      await dispatch(submitRegister(details));
+      navigate('/signin');
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-    const register = async () => {
-        try {
-            await dispatch(submitRegister(details));
-            navigate('/signin');               // ← after signup, go to login
-        } catch (err) {
-            console.error(err);
-        }
-    };
+  return (
+    <div className="register-container">
+      <Form 
+        onSubmit={register}                               
+        className="register-form bg-dark text-light p-4 rounded"
+      >
+        <Form.Group controlId="name" className="mb-3">
+          <Form.Label>Name</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter name"
+            value={details.name}
+            onChange={updateDetails}
+          />
+        </Form.Group>
 
-    return (
-        <div className="register-container">
-            <Form className='register-form bg-dark text-light p-4 rounded'>
-                <Form.Group controlId="name">
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control onChange={updateDetails} value={details.name} type="text" placeholder="Name" />
-                </Form.Group>
+        <Form.Group controlId="username" className="mb-3">
+          <Form.Label>Username</Form.Label>                
+          <Form.Control
+            type="text"                                   
+            placeholder="Enter username"
+            value={details.username}
+            onChange={updateDetails}
+            autoComplete="username"
+          />
+        </Form.Group>
 
-                <Form.Group controlId="username">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control onChange={updateDetails} value={details.username} autoComplete="username" type="email" placeholder="Enter email" />
-                </Form.Group>
+        <Form.Group controlId="password" className="mb-3">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Enter password"
+            value={details.password}
+            onChange={updateDetails}
+            autoComplete="new-password"
+          />
+        </Form.Group>
 
-                <Form.Group controlId="password">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control onChange={updateDetails} value={details.password} autoComplete="current-password" type="password" placeholder="Password" />
-                </Form.Group>
-                <Button onClick={register}>Register</Button>
-            </Form>
-        </div>
-    );
+        <Button type="submit">Register</Button>       
+      </Form>
+    </div>
+  );
 }
 
 export default Register;
